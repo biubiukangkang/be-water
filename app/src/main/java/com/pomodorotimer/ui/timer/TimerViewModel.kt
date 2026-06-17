@@ -45,29 +45,26 @@ class TimerViewModel(application: Application) : AndroidViewModel(application) {
 
     init {
         viewModelScope.launch {
-            combine(
-                settingsStore.focusDuration,
-                settingsStore.shortBreakDuration,
-                settingsStore.longBreakDuration,
-                settingsStore.longBreakInterval,
-                settingsStore.dailyGoal,
-                settingsStore.autoStart,
-                settingsStore.whiteNoiseType
-            ) { focus, short, long, interval, goal, auto, noise ->
-                SettingsSnapshot(focus, short, long, interval, goal, auto, noise)
-            }.collect { snapshot ->
-                _uiState.update { current ->
-                    current.copy(
-                        focusDuration = snapshot.focus,
-                        shortBreakDuration = snapshot.short,
-                        longBreakDuration = snapshot.long,
-                        longBreakInterval = snapshot.interval,
-                        dailyGoal = snapshot.goal,
-                        autoStart = snapshot.autoStart,
-                        whiteNoiseType = snapshot.noise
-                    )
+            settingsStore.focusDuration
+                .combine(settingsStore.shortBreakDuration) { a, b -> listOf<Any>(a, b) }
+                .combine(settingsStore.longBreakDuration) { l, c -> l + c }
+                .combine(settingsStore.longBreakInterval) { l, d -> l + d }
+                .combine(settingsStore.dailyGoal) { l, e -> l + e }
+                .combine(settingsStore.autoStart) { l, f -> l + f }
+                .combine(settingsStore.whiteNoiseType) { l, g -> l + g }
+                .collect { snapshot ->
+                    _uiState.update { current ->
+                        current.copy(
+                            focusDuration = snapshot[0] as Int,
+                            shortBreakDuration = snapshot[1] as Int,
+                            longBreakDuration = snapshot[2] as Int,
+                            longBreakInterval = snapshot[3] as Int,
+                            dailyGoal = snapshot[4] as Int,
+                            autoStart = snapshot[5] as Boolean,
+                            whiteNoiseType = snapshot[6] as Int
+                        )
+                    }
                 }
-            }
         }
         refreshDailyCount()
     }

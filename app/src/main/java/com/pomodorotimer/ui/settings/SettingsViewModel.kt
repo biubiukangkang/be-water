@@ -26,19 +26,24 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
 
     init {
         viewModelScope.launch {
-            combine(
-                settingsStore.focusDuration,
-                settingsStore.shortBreakDuration,
-                settingsStore.longBreakDuration,
-                settingsStore.longBreakInterval,
-                settingsStore.dailyGoal,
-                settingsStore.autoStart,
-                settingsStore.whiteNoiseType
-            ) { focus, short, long, interval, goal, auto, noise ->
-                SettingsUiState(focus, short, long, interval, goal, auto, noise)
-            }.collect { state ->
-                _uiState.value = state
-            }
+            settingsStore.focusDuration
+                .combine(settingsStore.shortBreakDuration) { a, b -> listOf<Any>(a, b) }
+                .combine(settingsStore.longBreakDuration) { l, c -> l + c }
+                .combine(settingsStore.longBreakInterval) { l, d -> l + d }
+                .combine(settingsStore.dailyGoal) { l, e -> l + e }
+                .combine(settingsStore.autoStart) { l, f -> l + f }
+                .combine(settingsStore.whiteNoiseType) { l, g -> l + g }
+                .collect { v ->
+                    _uiState.value = SettingsUiState(
+                        focusDuration = v[0] as Int,
+                        shortBreakDuration = v[1] as Int,
+                        longBreakDuration = v[2] as Int,
+                        longBreakInterval = v[3] as Int,
+                        dailyGoal = v[4] as Int,
+                        autoStart = v[5] as Boolean,
+                        whiteNoiseType = v[6] as Int
+                    )
+                }
         }
     }
 

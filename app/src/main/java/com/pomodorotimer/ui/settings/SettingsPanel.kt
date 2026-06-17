@@ -1,16 +1,19 @@
 package com.pomodorotimer.ui.settings
 
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsPanel(
     viewModel: SettingsViewModel = viewModel(),
@@ -47,7 +50,7 @@ fun SettingsPanel(
             viewModel.updateDailyGoal(it)
         }
 
-        HorizontalDivider(modifier = Modifier.padding(vertical = 16.dp))
+        Divider(modifier = Modifier.padding(vertical = 16.dp))
 
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -66,17 +69,25 @@ fun SettingsPanel(
         Text("白噪音", style = MaterialTheme.typography.bodyLarge)
         Spacer(Modifier.height(8.dp))
         val noiseOptions = listOf("关闭", "雨声", "海浪", "篝火", "白噪音")
-        SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
             noiseOptions.forEachIndexed { index, label ->
-                SegmentedButton(
-                    selected = state.whiteNoiseType == index,
-                    onClick = { viewModel.updateWhiteNoise(index) },
-                    shape = SegmentedButtonDefaults.itemShape(
-                        index = index,
-                        count = noiseOptions.size
-                    )
+                val selected = state.whiteNoiseType == index
+                Surface(
+                    modifier = Modifier
+                        .weight(1f)
+                        .clip(RoundedCornerShape(8.dp))
+                        .clickable { viewModel.updateWhiteNoise(index) },
+                    color = if (selected) MaterialTheme.colorScheme.primary
+                    else MaterialTheme.colorScheme.surface,
+                    shape = RoundedCornerShape(8.dp)
                 ) {
-                    Text(label, style = MaterialTheme.typography.labelSmall)
+                    Text(
+                        text = label,
+                        style = MaterialTheme.typography.labelSmall,
+                        modifier = Modifier.padding(vertical = 10.dp).padding(horizontal = 4.dp),
+                        color = if (selected) MaterialTheme.colorScheme.onPrimary
+                        else MaterialTheme.colorScheme.onSurface
+                    )
                 }
             }
         }
