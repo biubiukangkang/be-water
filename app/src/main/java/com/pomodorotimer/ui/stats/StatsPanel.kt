@@ -1,12 +1,20 @@
 package com.pomodorotimer.ui.stats
 
+import androidx.compose.animation.core.CubicBezierEasing
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+
+private val PopEasing = CubicBezierEasing(0.34f, 1.56f, 0.64f, 1f)
 
 @Composable
 fun StatsPanel(
@@ -28,6 +36,7 @@ fun StatsPanel(
         Text(
             text = "统计",
             style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier.padding(bottom = 16.dp)
         )
 
@@ -42,20 +51,31 @@ fun StatsPanel(
 
         Spacer(Modifier.height(24.dp))
 
-        Text("本周", style = MaterialTheme.typography.titleMedium)
+        Text(
+            "本周",
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onBackground
+        )
         Spacer(Modifier.height(8.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.Bottom
         ) {
             state.weekData.forEach { day ->
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
+                    val targetHeight = (day.count * 8).dp.coerceAtLeast(4.dp)
+                    val animatedHeight by animateDpAsState(
+                        targetValue = targetHeight,
+                        animationSpec = tween(500, easing = PopEasing),
+                        label = "barHeight"
+                    )
                     Surface(
                         modifier = Modifier
                             .width(24.dp)
-                            .height((day.count * 8).dp.coerceAtLeast(4.dp)),
+                            .height(animatedHeight),
                         shape = MaterialTheme.shapes.small,
                         color = if (day.count > 0) MaterialTheme.colorScheme.primary
                         else MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
@@ -77,7 +97,10 @@ private fun StatItem(label: String, value: String, unit: String) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
             text = value,
-            style = MaterialTheme.typography.displayMedium,
+            fontSize = 28.sp,
+            fontFamily = FontFamily.Monospace,
+            fontWeight = FontWeight.Light,
+            letterSpacing = 1.sp,
             color = MaterialTheme.colorScheme.onBackground
         )
         Text(
@@ -89,7 +112,8 @@ private fun StatItem(label: String, value: String, unit: String) {
         Text(
             text = label,
             style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.secondary
+            color = MaterialTheme.colorScheme.secondary,
+            letterSpacing = 1.sp
         )
     }
 }
