@@ -48,12 +48,16 @@ fun Controls(
             iconSize = 22.dp
         )
 
+        val playBgColor = if (isRunning)
+            MaterialTheme.colorScheme.onBackground.copy(alpha = 0.25f)
+        else MaterialTheme.colorScheme.primary
         GlassCircleButton(
             onClick = { if (isRunning) onPause() else onStart() },
             icon = if (isRunning) Icons.Default.Pause else Icons.Default.PlayArrow,
             contentDescription = if (isRunning) "暂停" else "开始",
             size = 56.dp,
-            iconSize = 22.dp
+            iconSize = 22.dp,
+            backgroundColor = playBgColor
         )
     }
 }
@@ -65,7 +69,8 @@ fun GlassCircleButton(
     contentDescription: String,
     size: androidx.compose.ui.unit.Dp,
     iconSize: androidx.compose.ui.unit.Dp,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    backgroundColor: Color = MaterialTheme.colorScheme.primary
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
@@ -74,7 +79,6 @@ fun GlassCircleButton(
         label = "btnScale"
     )
 
-    val backgroundColor = MaterialTheme.colorScheme.primary
     val borderColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.15f)
 
     Box(

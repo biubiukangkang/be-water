@@ -15,8 +15,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.dp
-import com.pomodorotimer.ui.theme.RingFillDark
-import com.pomodorotimer.ui.theme.RingFillLight
 import com.pomodorotimer.ui.theme.RingTrackDark
 import com.pomodorotimer.ui.theme.RingTrackLight
 
@@ -44,7 +42,6 @@ fun CircularTimer(
             val arcSize = Size(size.width - padding * 2, size.height - padding * 2)
             val topLeft = Offset(padding, padding)
             val trackColor = if (isDarkTheme) RingTrackDark else RingTrackLight
-            val fillColor = if (isDarkTheme) RingFillDark else RingFillLight
 
             drawArc(
                 color = trackColor,
@@ -57,7 +54,7 @@ fun CircularTimer(
             )
 
             drawArc(
-                color = fillColor,
+                color = phaseColor,
                 startAngle = -90f,
                 sweepAngle = 360f * animatedProgress,
                 useCenter = false,

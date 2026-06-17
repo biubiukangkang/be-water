@@ -201,7 +201,7 @@ private fun CustomToggle(
     modifier: Modifier = Modifier
 ) {
     val thumbOffset by animateDpAsState(
-        targetValue = if (checked) 2.dp else 20.dp,
+        targetValue = if (checked) 20.dp else 2.dp,
         label = "toggleThumb"
     )
 
@@ -241,7 +241,8 @@ private fun NoiseChip(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val backgroundColor = if (selected) MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
+    val backgroundColor = if (selected)
+        MaterialTheme.colorScheme.onBackground.copy(alpha = 0.2f)
     else MaterialTheme.colorScheme.primary
     val contentColor = if (selected) MaterialTheme.colorScheme.onBackground
     else MaterialTheme.colorScheme.secondary

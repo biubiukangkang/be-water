@@ -66,7 +66,7 @@ fun StatsPanel(
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    val targetHeight = (day.count * 8).dp.coerceAtLeast(4.dp)
+                    val targetHeight = (day.count * 8).dp.coerceAtLeast(3.dp)
                     val animatedHeight by animateDpAsState(
                         targetValue = targetHeight,
                         animationSpec = tween(500, easing = PopEasing),
