@@ -5,6 +5,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.Settings
@@ -12,6 +14,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
@@ -22,7 +25,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.pomodorotimer.ui.theme.*
 import com.pomodorotimer.ui.timer.components.CircularTimer
 import com.pomodorotimer.ui.timer.components.Controls
-import com.pomodorotimer.ui.timer.components.GlassCircleButton
 import com.pomodorotimer.ui.timer.components.TimeDisplay
 import com.pomodorotimer.ui.timer.components.TomatoDots
 import com.pomodorotimer.ui.stats.StatsPanel
@@ -112,12 +114,13 @@ fun TimerScreen(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .windowInsetsPadding(WindowInsets.statusBars)
                         .padding(horizontal = 16.dp, vertical = 8.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "静",
+                        text = "Be Water",
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Light,
                         letterSpacing = 8.sp,
@@ -134,23 +137,39 @@ fun TimerScreen(
                             color = MaterialTheme.colorScheme.secondary,
                             modifier = Modifier.padding(end = 6.dp)
                         )
-                        GlassCircleButton(
+                        IconButton(
                             onClick = {
                                 showStats = true
                                 statsViewModel.refresh()
                             },
-                            icon = Icons.Default.BarChart,
-                            contentDescription = "统计",
-                            size = 36.dp,
-                            iconSize = 20.dp
-                        )
-                        GlassCircleButton(
+                            modifier = Modifier
+                                .size(36.dp)
+                                .background(
+                                    MaterialTheme.colorScheme.onBackground.copy(alpha = 0.08f),
+                                    CircleShape
+                                )
+                        ) {
+                            Icon(
+                                Icons.Default.BarChart, "统计",
+                                modifier = Modifier.size(20.dp),
+                                tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f)
+                            )
+                        }
+                        IconButton(
                             onClick = { showSettings = true },
-                            icon = Icons.Default.Settings,
-                            contentDescription = "设置",
-                            size = 36.dp,
-                            iconSize = 20.dp
-                        )
+                            modifier = Modifier
+                                .size(36.dp)
+                                .background(
+                                    MaterialTheme.colorScheme.onBackground.copy(alpha = 0.08f),
+                                    CircleShape
+                                )
+                        ) {
+                            Icon(
+                                Icons.Default.Settings, "设置",
+                                modifier = Modifier.size(20.dp),
+                                tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f)
+                            )
+                        }
                     }
                 }
             }
@@ -289,13 +308,21 @@ fun TimerScreen(
     }
 
     if (showStats) {
-        ModalBottomSheet(onDismissRequest = { showStats = false }) {
+        ModalBottomSheet(
+            onDismissRequest = { showStats = false },
+            containerColor = if (isDarkTheme) Color(0xFF2A2520).copy(alpha = 0.97f) else Color(0xFFF5F0EB).copy(alpha = 0.97f),
+            contentColor = if (isDarkTheme) Color(0xFFF0EAE4) else Color(0xFF2C2420)
+        ) {
             StatsPanel(viewModel = statsViewModel, onDismiss = { showStats = false })
         }
     }
 
     if (showSettings) {
-        ModalBottomSheet(onDismissRequest = { showSettings = false }) {
+        ModalBottomSheet(
+            onDismissRequest = { showSettings = false },
+            containerColor = if (isDarkTheme) Color(0xFF2A2520).copy(alpha = 0.97f) else Color(0xFFF5F0EB).copy(alpha = 0.97f),
+            contentColor = if (isDarkTheme) Color(0xFFF0EAE4) else Color(0xFF2C2420)
+        ) {
             SettingsPanel(viewModel = settingsViewModel, onDismiss = { showSettings = false })
         }
     }

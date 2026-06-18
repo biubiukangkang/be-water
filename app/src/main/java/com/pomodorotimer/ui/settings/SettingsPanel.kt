@@ -18,7 +18,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
@@ -175,7 +174,6 @@ private fun GlassSettingButton(
                 scaleX = scale
                 scaleY = scale
             }
-            .shadow(4.dp, CircleShape)
             .background(MaterialTheme.colorScheme.primary, CircleShape)
             .border(BorderStroke(1.dp, MaterialTheme.colorScheme.onBackground.copy(alpha = 0.15f)), CircleShape)
             .clip(CircleShape)
@@ -249,7 +247,6 @@ private fun NoiseChip(
 
     Box(
         modifier = modifier
-            .shadow(4.dp, RoundedCornerShape(8.dp))
             .background(backgroundColor, RoundedCornerShape(8.dp))
             .border(
                 BorderStroke(1.dp, MaterialTheme.colorScheme.onBackground.copy(alpha = 0.15f)),

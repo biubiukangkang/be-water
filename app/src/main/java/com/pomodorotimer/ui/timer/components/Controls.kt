@@ -21,7 +21,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -49,15 +48,16 @@ fun Controls(
         )
 
         val playBgColor = if (isRunning)
-            MaterialTheme.colorScheme.onBackground.copy(alpha = 0.25f)
-        else MaterialTheme.colorScheme.primary
+            MaterialTheme.colorScheme.secondary.copy(alpha = 0.25f)
+        else MaterialTheme.colorScheme.primary.copy(alpha = 0.55f)
         GlassCircleButton(
             onClick = { if (isRunning) onPause() else onStart() },
             icon = if (isRunning) Icons.Default.Pause else Icons.Default.PlayArrow,
             contentDescription = if (isRunning) "暂停" else "开始",
             size = 56.dp,
             iconSize = 22.dp,
-            backgroundColor = playBgColor
+            backgroundColor = playBgColor,
+            iconModifier = if (!isRunning) Modifier.offset(x = 1.dp) else Modifier
         )
     }
 }
@@ -70,7 +70,8 @@ fun GlassCircleButton(
     size: androidx.compose.ui.unit.Dp,
     iconSize: androidx.compose.ui.unit.Dp,
     modifier: Modifier = Modifier,
-    backgroundColor: Color = MaterialTheme.colorScheme.primary
+    backgroundColor: Color = MaterialTheme.colorScheme.primary,
+    iconModifier: Modifier = Modifier
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
@@ -79,7 +80,8 @@ fun GlassCircleButton(
         label = "btnScale"
     )
 
-    val borderColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.15f)
+    val borderColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.25f)
+    val iconTint = MaterialTheme.colorScheme.onBackground
 
     Box(
         modifier = modifier
@@ -87,7 +89,6 @@ fun GlassCircleButton(
                 scaleX = scale
                 scaleY = scale
             }
-            .shadow(8.dp, CircleShape)
             .size(size)
             .background(backgroundColor, CircleShape)
             .border(BorderStroke(1.dp, borderColor), CircleShape)
@@ -102,8 +103,8 @@ fun GlassCircleButton(
         Icon(
             imageVector = icon,
             contentDescription = contentDescription,
-            modifier = Modifier.size(iconSize),
-            tint = MaterialTheme.colorScheme.onBackground
+            modifier = Modifier.size(iconSize).then(iconModifier),
+            tint = iconTint
         )
     }
 }
